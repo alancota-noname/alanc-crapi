@@ -25,3 +25,5 @@ export const PASSWORD_VALIDATION: RegExp =
 export const NAME_VALIDATION: RegExp = /^[a-zA-Z ]+$/;
 export const PIN_CODE_VALIDATION: RegExp = /^[0-9]{4}$/;
 export const VIN_VALIDATION: RegExp = /^[A-HJ-NPR-Z0-9]{17}$/;
+
+export const CUSTOM_APP_NAME: string = "Shady Lane Autos - Customer Services";

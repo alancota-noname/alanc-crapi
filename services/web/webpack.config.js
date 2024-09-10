@@ -1,3 +1,7 @@
+// Added to support dotenv
+const path = require("path");
+const Dotenv = require("dotenv-webpack");
+
 module.exports = {
   entry: "./src/index.ts",
   output: {
@@ -31,4 +35,12 @@ module.exports = {
     ],
   },
   // Other options...
+
+  // Dotenv support
+  plugins: [
+    new Dotenv({
+      //path: "./.env", // Path to your .env file
+      systemvars: true, // Include system environment variables
+    }),
+  ],
 };

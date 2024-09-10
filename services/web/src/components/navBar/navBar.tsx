@@ -15,6 +15,8 @@
 
 import "./nav.css";
 
+import { CUSTOM_APP_NAME } from "../../constants/constants";
+
 import { Button, Dropdown, Menu, Avatar, Layout, Space } from "antd";
 import { LogoutOutlined, DownOutlined } from "@ant-design/icons";
 import React from "react";
@@ -96,7 +98,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
     <Header>
       <Space className="top-nav-left">
         <div className="logo-text" onClick={() => navigate("/")}>
-          crAPI
+          {CUSTOM_APP_NAME}
         </div>
         {isLoggedIn ? menuNavigation() : <div />}
       </Space>
