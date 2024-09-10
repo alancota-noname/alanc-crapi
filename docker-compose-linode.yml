@@ -270,7 +270,7 @@ services:
 
 networks:
   nginx-proxy-network:
-    name: npm-network
+    name: nginx-proxy-network
     external: true
 
 volumes:
