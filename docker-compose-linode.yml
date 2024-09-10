@@ -251,22 +251,22 @@ services:
       - nginx-proxy-network
 
   # Any traffic to crapi-web goes through the proxy
-  # nginx-proxy:
-  #   container_name: nginx-proxy
-  #   image: "jc21/nginx-proxy-manager:latest"
-  #   restart: unless-stopped
-  #   ports:
-  #     # These ports are in format <host-port>:<container-port>
-  #     - "80:80" # Public HTTP Port
-  #     - "443:443" # Public HTTPS Port
-  #     - "81:81" # Admin Web Port
+  nginx-proxy:
+    container_name: nginx-proxy
+    image: "jc21/nginx-proxy-manager:latest"
+    restart: unless-stopped
+    ports:
+      # These ports are in format <host-port>:<container-port>
+      - "80:80" # Public HTTP Port
+      - "443:443" # Public HTTPS Port
+      - "81:81" # Admin Web Port
 
-  #   volumes:
-  #     - nginx-proxy-manager-data:/data
-  #     - letsencrypt-certificates:/etc/letsencrypt
+    volumes:
+      - nginx-proxy-manager-data:/data
+      - letsencrypt-certificates:/etc/letsencrypt
 
-  #   networks:
-  #     - nginx-proxy-network
+    networks:
+      - nginx-proxy-network
 
 networks:
   nginx-proxy-network:
