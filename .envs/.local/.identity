@@ -1,0 +1,45 @@
+# Identity Service
+# ------------------------------------------------------------
+
+# Postgres DB
+DB_NAME=$POSTGRES_DB
+DB_USER=$POSTGRES_USER
+DB_PASSWORD=$POSTGRES_PASSWORD
+DB_HOST=$POSTGRES_HOST
+DB_PORT=$POSTGRES_PORT
+
+# Server Port
+SERVER_PORT=$IDENTITY_SERVER_PORT
+
+# Enable shell injection
+ENABLE_SHELL_INJECTION=false
+
+# SMTP Optional Configuration
+SMTP_AUTH=true
+SMTP_STARTTLS=true
+SMTP_EMAIL=user@$DOMAIN_NAME
+SMTP_PASS=xxxxxxxxxxxxxx
+SMTP_PORT=587
+SMTP_FROM=no-reply@$DOMAIN_NAME
+SMTP_HOST=smtp.example.com
+
+LANG=C.UTF-8
+
+# Enable Log4j
+ENABLE_LOG4J=false
+
+# Java VM Options
+JAVA_TOOL_OPTIONS=-Xmx2048m
+
+# JWT
+JWT_SECRET=crapi
+JWT_EXPIRATION=604800000
+JWKS=$(openssl base64 -in ./jwks.json -A)
+
+# TLS
+TLS_ENABLED=false
+TLS_KEYSTORE_TYPE=PKCS12
+TLS_KEYSTORE=classpath:certs/server.p12
+TLS_KEYSTORE_PASSWORD=passw0rd
+TLS_KEY_PASSWORD=passw0rd
+TLS_KEY_ALIAS=identity

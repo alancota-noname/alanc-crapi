@@ -3,3 +3,7 @@ deploy/vagrant/.vagrant
 .secrets
 .vscode/
 *.local
+
+# Feature: new .envs directory
+.envs/*
+!.envs/.local/

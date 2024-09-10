@@ -1,0 +1,240 @@
+# Licensed under the Apache License, Version 2.0 (the “License”);
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an “AS IS” BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: ${PROJECT_NAME:-alanc-crapi}
+
+services:
+  crapi-identity:
+    container_name: crapi-identity
+    build:
+      context: ./services/identity
+      dockerfile: Dockerfile
+    image: crapi/crapi-identity:${VERSION:-latest}
+    #ports:
+    #  - "${LISTEN_IP:-127.0.0.1}:8080:8080"
+    env_file:
+      - .envs/.local/.global
+      - .envs/.local/.postgres
+      - .envs/.local/.mailhog
+      - .envs/.local/.apigw
+      - .envs/.local/.identity
+
+    volumes:
+      - ./keys:/keys
+
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      mailhog:
+        condition: service_healthy
+    healthcheck:
+      test: /app/health.sh
+      interval: 15s
+      timeout: 15s
+      retries: 15
+    deploy:
+      resources:
+        limits:
+          cpus: "0.8"
+          memory: 384M
+
+  crapi-community:
+    container_name: crapi-community
+    build:
+      context: ./services/community
+      dockerfile: Dockerfile
+    image: crapi/crapi-community:${VERSION:-latest}
+    #ports:
+    #  - "${LISTEN_IP:-127.0.0.1}:8087:8087"
+    env_file:
+      - .envs/.local/.global
+      - .envs/.local/.postgres
+      - .envs/.local/.mongodb
+      - .envs/.local/.community
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      crapi-identity:
+        condition: service_healthy
+    healthcheck:
+      test: /app/health.sh
+      interval: 15s
+      timeout: 15s
+      retries: 15
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: 192M
+
+  crapi-workshop:
+    container_name: crapi-workshop
+    build:
+      context: ./services/workshop
+      dockerfile: Dockerfile
+    image: crapi/crapi-workshop:${VERSION:-latest}
+    #ports:
+    #  - "${LISTEN_IP:-127.0.0.1}:8000:8000"
+    env_file:
+      - .envs/.local/.global
+      - .envs/.local/.postgres
+      - .envs/.local/.mongodb
+      - .envs/.local/.apigw
+      - .envs/.local/.workshop
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      crapi-identity:
+        condition: service_healthy
+      crapi-community:
+        condition: service_healthy
+    healthcheck:
+      test: /app/health.sh
+      interval: 15s
+      timeout: 15s
+      retries: 15
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: 128M
+
+  crapi-web:
+    container_name: crapi-web
+    build:
+      context: ./services/web
+      dockerfile: Dockerfile
+    image: crapi/crapi-web:${VERSION:-latest}
+    ports:
+      - "${LISTEN_IP:-127.0.0.1}:${WEB_SERVER_PORT}:80"
+      - "${LISTEN_IP:-127.0.0.1}:${WEB_SERVER_PORT_SSL}:443"
+    env_file:
+      - .envs/.local/.global
+      - .envs/.local/.web
+    depends_on:
+      crapi-community:
+        condition: service_healthy
+      crapi-identity:
+        condition: service_healthy
+      crapi-workshop:
+        condition: service_healthy
+    healthcheck:
+      test: curl 0.0.0.0:80/health
+      interval: 15s
+      timeout: 15s
+      retries: 15
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: 128M
+
+  postgresdb:
+    container_name: postgresdb
+    image: "postgres:14"
+    command: ["postgres", "-c", "max_connections=500"]
+    env_file:
+      - .envs/.local/.postgres
+    #ports:
+    #  - "${LISTEN_IP:-127.0.0.1}:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 15s
+      timeout: 15s
+      retries: 15
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data/
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+
+  mongodb:
+    container_name: mongodb
+    image: "mongo:4.4"
+    env_file:
+      - .envs/.local/.mongodb
+    #ports:
+    #  - "${LISTEN_IP:-127.0.0.1}:27017:27017"
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongodb:27017/test --quiet
+      interval: 15s
+      timeout: 15s
+      retries: 15
+      start_period: 20s
+    volumes:
+      - mongodb-data:/data/db
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: 128M
+
+  mailhog:
+    user: root
+    container_name: mailhog
+    build:
+      context: ./services/mailhog
+      dockerfile: Dockerfile
+    image: crapi/mailhog:${VERSION:-latest}
+    env_file:
+      - .envs/.local/.mongodb
+      - .envs/.local/.mailhog
+    ports:
+      #  - "127.0.0.1:1025:1025" # smtp server
+      - "${LISTEN_IP:-127.0.0.1}:8025:8025" # Mail ui
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "8025"]
+      interval: 15s
+      timeout: 15s
+      retries: 15
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: 128M
+
+  api.shadylaneautos.com:
+    container_name: api.shadylaneautos.com
+    build:
+      context: ./services/gateway-service
+      args:
+        CERTGEN_HOSTS: 127.0.0.1,gateway-service,api.shadylaneautos.com,shadylaneautos.com
+      dockerfile: Dockerfile
+    image: crapi/gateway-service:${VERSION:-latest}
+    #ports:
+    #  - "${LISTEN_IP:-127.0.0.1}:8443:443" # https
+    env_file:
+      - .envs/.local/.global
+      - .envs/.local/.apigw
+    healthcheck:
+      test: echo -n "GET / HTTP/1.1\n\n" > /dev/tcp/127.0.0.1/443
+      interval: 15s
+      timeout: 15s
+      retries: 15
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+
+volumes:
+  mongodb-data:
+  postgresql-data:

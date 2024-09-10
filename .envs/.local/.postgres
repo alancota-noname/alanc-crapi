@@ -1,0 +1,8 @@
+# Postgres
+# ------------------------------------------------------------
+
+POSTGRES_DB=crapi
+POSTGRES_HOST=postgresdb
+POSTGRES_PORT=5432
+POSTGRES_USER=admin
+POSTGRES_PASSWORD=crapisecretpassword

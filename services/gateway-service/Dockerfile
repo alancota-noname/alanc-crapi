@@ -2,6 +2,9 @@ FROM golang:1.17-buster AS builder
 
 WORKDIR /app
 
+# Arguments for the certgen
+ARG CERTGEN_HOSTS=127.0.0.1,gateway-service,api.mypremiumdealership.com,mypremiumdealership.com
+
 COPY go.* ./
 RUN go mod download
 
@@ -13,7 +16,8 @@ RUN go build -v -o server
 RUN wget https://github.com/minio/certgen/releases/latest/download/certgen-linux-amd64 -O /tmp/certgen \
     && chmod +x /tmp/certgen
 
-RUN /tmp/certgen -host "127.0.0.1,gateway-service,api.mypremiumdealership.com,mypremiumdealership.com"
+# RUN /tmp/certgen -host "127.0.0.1,gateway-service,api.mypremiumdealership.com,mypremiumdealership.com"
+RUN /tmp/certgen -host "${CERTGEN_HOSTS}"
 RUN ls -la
 
 FROM debian:buster-slim

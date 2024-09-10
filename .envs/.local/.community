@@ -1,0 +1,20 @@
+# Community Service
+# ------------------------------------------------------------
+
+# Postgres DB
+DB_NAME=$POSTGRES_DB
+DB_USER=$POSTGRES_USER
+DB_PASSWORD=$POSTGRES_PASSWORD
+DB_HOST=$POSTGRES_HOST
+DB_PORT=$POSTGRES_PORT
+
+# Server Port
+SERVER_PORT=$COMMUNITY_SERVER_PORT
+
+# Other services
+IDENTITY_SERVICE=$IDENTITY_SERVICE_NAME:$IDENTITY_SERVER_PORT
+
+# TLS
+TLS_ENABLED=$COMMUNITY_TLS_ENABLED
+TLS_CERTIFICATE=certs/server.crt
+TLS_KEY=certs/server.key

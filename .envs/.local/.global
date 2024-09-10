@@ -1,0 +1,40 @@
+# Global Settings
+# ------------------------------------------------------------
+
+# Global Log Level
+LOG_LEVEL=DEBUG
+
+# Global TLS
+IDENTITY_TLS_ENABLED=false
+COMMUNITY_TLS_ENABLED=false
+WORKSHOP_TLS_ENABLED=false
+WEB_TLS_ENABLED=false
+
+# Domains
+DOMAIN_NAME=shadylaneautos.com
+
+# Identity Services
+# ------------------------------------------------------------
+IDENTITY_SERVICE_NAME=crapi-identity
+IDENTITY_SERVER_PORT=8080
+
+# Community Services
+# ------------------------------------------------------------
+COMMUNITY_SERVICE_NAME=crapi-community
+COMMUNITY_SERVER_PORT=8087
+
+# Workshop Services
+# ------------------------------------------------------------
+WORKSHOP_SERVICE_NAME=crapi-workshop
+WORKSHOP_SERVER_PORT=8000
+
+# Web Services
+# ------------------------------------------------------------
+WEB_SERVICE_NAME=crapi-web
+WEB_SERVER_PORT=8889
+WEB_SERVER_PORT_SSL=8443
+
+# Mailhog Services
+# ------------------------------------------------------------
+MAILHOG_SERVICE_NAME=mailhog
+MAILHOG_SERVER_PORT=8025
