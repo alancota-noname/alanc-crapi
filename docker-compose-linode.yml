@@ -196,6 +196,8 @@ services:
         limits:
           cpus: "0.3"
           memory: 128M
+    networks:
+      - nginx-proxy-network
 
   mailhog:
     user: root
