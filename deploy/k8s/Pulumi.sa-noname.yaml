@@ -1,0 +1,23 @@
+config:
+  alanc-crapi-k8s:projectOwnerName: Alan Cota
+  alanc-crapi-k8s:projectOwnerEmail: acota@akamai.com
+  alanc-crapi-k8s:projectPrefix: alanc-crapi-k8s
+  alanc-crapi-k8s:projectVersion: 1.1.6
+  alanc-crapi-k8s:projectDescription: "Customized crAPI for Noname custom demos"
+  alanc-crapi-k8s:projectRepository: https://github.com/alancota-noname/alanc-crapi
+  alanc-crapi-k8s:pulumiProjectOwnerTag: alancota-pulumi
+  alanc-crapi-k8s:pulumiOrganizationName: alancota
+  alanc-crapi-k8s:pulumiInfraProjectName: alanc-crapi-infra
+  alanc-crapi-k8s:pulumiInfraStackName: sa-noname
+  alanc-crapi-k8s:appName: alanc-crapi
+  alanc-crapi-k8s:servicesPath: ../../services
+  alanc-crapi-k8s:dockerTag: noname-1.1.6
+  alanc-crapi-k8s:pushToEcr: True
+  alanc-crapi-k8s:buildCustomImages: False
+  alanc-crapi-k8s:servicesToBuild: ["community", "gateway-service", "identity", "mailhog", "web", "workshop"]
+  alanc-crapi-k8s:eksClusterName: sa-eks
+  alanc-crapi-k8s:eksAppNamespace: alanc-crapi
+  alanc-crapi-k8s:crapiJWTKeySecretKeyName: jwt-key-secret
+  alanc-crapi-k8s:crapiJWTKeySecretKeyFile: keys/jwks.json
+  aws:region: us-east-1
+  kubernetes:context: aws-sa-eks-ctx

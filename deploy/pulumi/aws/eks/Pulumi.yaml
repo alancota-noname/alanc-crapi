@@ -1,0 +1,11 @@
+name: alanc-crapi-eks
+runtime:
+  name: python
+  options:
+    toolchain: poetry
+description: crAPI Deployment to AWS EKS Kubernetes Cluster
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: kubernetes-python
+

@@ -1,0 +1,10 @@
+name: alanc-crapi-infra
+runtime:
+  name: python
+  options:
+    toolchain: poetry
+description: A Python program to deploy a virtual machine on Amazon EC2
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: vm-aws-python

@@ -1,0 +1,17 @@
+config:
+  alanc-crapi-infra:projectPrefix: alanc-crapi-infra
+  alanc-crapi-infra:projectOwnerTag: alancota-pulumi
+  alanc-crapi-infra:vpcName: alanc-crapi-infra-vpc
+  alanc-crapi-infra:vpcNetworkCidr: "10.80.0.0/16"
+  alanc-crapi-infra:vpcNumberAvailabilityZones: 2
+  alanc-crapi-infra:createSecurityGroup: True
+  alanc-crapi-infra:securityGroupIngressAllowAllFrom: "99.27.202.101/32"
+  alanc-crapi-infra:createAwsEksCluster: False
+  alanc-crapi-infra:awsEksClusterName: sa-eks
+  alanc-crapi-infra:eksAppNamespace: alanc-crapi
+  alanc-crapi-infra:awsEksClusterId:
+  alanc-crapi-infra:desiredClusterSize: 2
+  alanc-crapi-infra:eksNodeInstanceType: t2.small
+  alanc-crapi-infra:maxClusterSize: 3
+  alanc-crapi-infra:minClusterSize: 2
+  aws:region: us-west-1
