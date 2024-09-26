@@ -1,7 +1,11 @@
 from typing import Any
-
 from pulumi import ComponentResource, ResourceOptions
-from pulumi_kubernetes.core.v1 import ConfigMap, PersistentVolumeClaim, Service
+from pulumi_kubernetes.core.v1 import (
+    ConfigMap,
+    PersistentVolumeClaim,
+    Service,
+    ServiceSpecType,
+)
 from pulumi_kubernetes.meta.v1 import ObjectMetaArgs
 from pulumi_kubernetes.apps.v1 import StatefulSet
 from common.base import MetadataBase
@@ -100,6 +104,32 @@ class Database(ComponentResource):
                             "storage": args.db_k8s_pvc_size,
                         },
                     },
+                },
+                opts=opts,
+            )
+
+            # Create Mongodb Service
+            self.mongodb_svc = Service(
+                f"{settings.app_name}-{name}-Service",
+                metadata=MetadataBase(
+                    name=name,
+                    namespace=settings.app_namespace,
+                    labels=k8s_labels(
+                        name=name,
+                        component="database",
+                    ),
+                ),
+                spec={
+                    "ports": [
+                        {
+                            "name": f"{name}",
+                            "port": args.db_port,
+                        }
+                    ],
+                    "selector": {
+                        "app": name,
+                    },
+                    "type": ServiceSpecType.CLUSTER_IP,
                 },
                 opts=opts,
             )
@@ -233,6 +263,7 @@ class Database(ComponentResource):
                     "selector": {
                         "app": name,
                     },
+                    "type": ServiceSpecType.CLUSTER_IP,
                 },
                 opts=opts,
             )
@@ -290,7 +321,7 @@ class Database(ComponentResource):
                                         {
                                             "mount_path": "/var/lib/postgresql/data",
                                             "name": f"{name}-data",
-                                            "sub_path": name,
+                                            "sub_path": "postgres",
                                         }
                                     ],
                                 }

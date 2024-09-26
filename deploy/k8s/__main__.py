@@ -87,140 +87,140 @@ for folder in folders:
 # crAPI Deployments
 
 # 1 - Create the Namespace
-namespace = k8s.core.v1.Namespace(
-	resource_name=crapi_k8s_namespace,
-	metadata=k8s.meta.v1.ObjectMetaArgs(
-		name=crapi_k8s_namespace
-	)
-)
+# namespace = k8s.core.v1.Namespace(
+# 	resource_name=crapi_k8s_namespace,
+# 	metadata=k8s.meta.v1.ObjectMetaArgs(
+# 		name=crapi_k8s_namespace
+# 	)
+# )
 
-# 2 - Create the JWT Key Secret
-jwt_key = k8s.core.v1.Secret(
-	resource_name=crapi_k8s_jwt_key_name,
-	metadata=k8s.meta.v1.ObjectMetaArgs(
-		name=crapi_k8s_jwt_key_name,
-		namespace=crapi_k8s_namespace
-	),
-	string_data={
-		"jwks.json": encode_file(crapi_k8s_jwt_key_file)
-	}
-)
+# # 2 - Create the JWT Key Secret
+# jwt_key = k8s.core.v1.Secret(
+# 	resource_name=crapi_k8s_jwt_key_name,
+# 	metadata=k8s.meta.v1.ObjectMetaArgs(
+# 		name=crapi_k8s_jwt_key_name,
+# 		namespace=crapi_k8s_namespace
+# 	),
+# 	string_data={
+# 		"jwks.json": encode_file(crapi_k8s_jwt_key_file)
+# 	}
+# )
 
-# 3 - MongoDB
-k8s.core.v1.ConfigMap(
-	resource_name="mongodb-config",
-	metadata=k8s.meta.v1.ObjectMetaArgs(
-		name="mongodb-config",
-		namespace=crapi_k8s_namespace,
-		labels={
-			"app": "mongodb"
-		},
-	),
-	data={
-		"MONGO_INITDB_ROOT_USERNAME": "admin",
-		"MONGO_INITDB_ROOT_PASSWORD": "crapisecretpassword"
-	}
-)
+# # 3 - MongoDB
+# k8s.core.v1.ConfigMap(
+# 	resource_name="mongodb-config",
+# 	metadata=k8s.meta.v1.ObjectMetaArgs(
+# 		name="mongodb-config",
+# 		namespace=crapi_k8s_namespace,
+# 		labels={
+# 			"app": "mongodb"
+# 		},
+# 	),
+# 	data={
+# 		"MONGO_INITDB_ROOT_USERNAME": "admin",
+# 		"MONGO_INITDB_ROOT_PASSWORD": "crapisecretpassword"
+# 	}
+# )
 
-mongo_pvc = k8s.core.v1.PersistentVolumeClaim(
-	resource_name="mongodb-pvc",
-	metadata=k8s.meta.v1.ObjectMetaArgs(
-		name="mongodb-pv-claim",
-		namespace=crapi_k8s_namespace
-	),
-	spec=k8s.storage.v1.PersistentVolumeClaimSpecArgs(
-		access_modes=["ReadWriteOnce"],
-		resources=k8s.core.v1.ResourceRequirementsArgs(
-			requests={
-				"storage": "1Gi"
-			}
-		)
-	)
-)
+# mongo_pvc = k8s.core.v1.PersistentVolumeClaim(
+# 	resource_name="mongodb-pvc",
+# 	metadata=k8s.meta.v1.ObjectMetaArgs(
+# 		name="mongodb-pv-claim",
+# 		namespace=crapi_k8s_namespace
+# 	),
+# 	spec=k8s.storage.v1.PersistentVolumeClaimSpecArgs(
+# 		access_modes=["ReadWriteOnce"],
+# 		resources=k8s.core.v1.ResourceRequirementsArgs(
+# 			requests={
+# 				"storage": "1Gi"
+# 			}
+# 		)
+# 	)
+# )
 
-k8s.apps.v1.StatefulSet(
-	resource_name="mongodb",
-	metadata=k8s.meta.v1.ObjectMetaArgs(
-		name="mongodb",
-		namespace=crapi_k8s_namespace,
-		labels={
-			"app": "mongodb"
-		},
-	),
-	spec=k8s.apps.v1.StatefulSetSpecArgs(
-		replicas=1,
-		selector=k8s.meta.v1.LabelSelectorArgs(
-			match_labels={
-				"app": "mongodb"
-			}
-		),
-		template=k8s.core.v1.PodTemplateSpecArgs(
-			metadata=k8s.meta.v1.ObjectMetaArgs(
-				labels={
-					"app": "mongodb"
-				}
-			),
-			spec=k8s.core.v1.PodSpecArgs(
-				containers=[
-					k8s.core.v1.ContainerArgs(
-						name="mongodb",
-						image="mongo:4.4",
-						env=[
-							k8s.core.v1.EnvVarArgs(
-								name="MONGO_INITDB_ROOT_USERNAME",
-								value_from=k8s.core.v1.EnvVarSourceArgs(
-									secret_key_ref=k8s.core.v1.SecretKeySelectorArgs(
-										name="mongodb-config",
-										key="MONGO_INITDB_ROOT_USERNAME"
-									)
-								)
-							),
-							k8s.core.v1.EnvVarArgs(
-								name="MONGO_INITDB_ROOT_PASSWORD",
-								value_from=k8s.core.v1.EnvVarSourceArgs(
-									secret_key_ref=k8s.core.v1.SecretKeySelectorArgs(
-										name="mongodb-config",
-										key="MONGO_INITDB_ROOT_PASSWORD"
-									)
-								)
-							)
-						],
-						ports=[
-							k8s.core.v1.ContainerPortArgs(
-								container_port=27017
-							)
-						]
-					)
-				],
-				volumes=[
-					k8s.core.v1.VolumeArgs(
-						name="mongodb-data",
-						persistent_volume_claim=mongo_pvc.metadata.get().name,
-					)
-				]
-			)
-		)
-	)
-)
+# k8s.apps.v1.StatefulSet(
+# 	resource_name="mongodb",
+# 	metadata=k8s.meta.v1.ObjectMetaArgs(
+# 		name="mongodb",
+# 		namespace=crapi_k8s_namespace,
+# 		labels={
+# 			"app": "mongodb"
+# 		},
+# 	),
+# 	spec=k8s.apps.v1.StatefulSetSpecArgs(
+# 		replicas=1,
+# 		selector=k8s.meta.v1.LabelSelectorArgs(
+# 			match_labels={
+# 				"app": "mongodb"
+# 			}
+# 		),
+# 		template=k8s.core.v1.PodTemplateSpecArgs(
+# 			metadata=k8s.meta.v1.ObjectMetaArgs(
+# 				labels={
+# 					"app": "mongodb"
+# 				}
+# 			),
+# 			spec=k8s.core.v1.PodSpecArgs(
+# 				containers=[
+# 					k8s.core.v1.ContainerArgs(
+# 						name="mongodb",
+# 						image="mongo:4.4",
+# 						env=[
+# 							k8s.core.v1.EnvVarArgs(
+# 								name="MONGO_INITDB_ROOT_USERNAME",
+# 								value_from=k8s.core.v1.EnvVarSourceArgs(
+# 									secret_key_ref=k8s.core.v1.SecretKeySelectorArgs(
+# 										name="mongodb-config",
+# 										key="MONGO_INITDB_ROOT_USERNAME"
+# 									)
+# 								)
+# 							),
+# 							k8s.core.v1.EnvVarArgs(
+# 								name="MONGO_INITDB_ROOT_PASSWORD",
+# 								value_from=k8s.core.v1.EnvVarSourceArgs(
+# 									secret_key_ref=k8s.core.v1.SecretKeySelectorArgs(
+# 										name="mongodb-config",
+# 										key="MONGO_INITDB_ROOT_PASSWORD"
+# 									)
+# 								)
+# 							)
+# 						],
+# 						ports=[
+# 							k8s.core.v1.ContainerPortArgs(
+# 								container_port=27017
+# 							)
+# 						]
+# 					)
+# 				],
+# 				volumes=[
+# 					k8s.core.v1.VolumeArgs(
+# 						name="mongodb-data",
+# 						persistent_volume_claim=mongo_pvc.metadata.get().name,
+# 					)
+# 				]
+# 			)
+# 		)
+# 	)
+# )
 
-k8s.core.v1.Service(
-	resource_name="mongodb",
-	metadata=k8s.meta.v1.ObjectMetaArgs(
-		name="mongodb",
-		namespace=crapi_k8s_namespace
-	),
-	spec=k8s.core.v1.ServiceSpecArgs(
-		selector={
-			"app": "mongodb"
-		},
-		ports=[
-			k8s.core.v1.ServicePortArgs(
-				port=27017,
-				target_port=27017
-			)
-		]
-	)
-)
+# k8s.core.v1.Service(
+# 	resource_name="mongodb",
+# 	metadata=k8s.meta.v1.ObjectMetaArgs(
+# 		name="mongodb",
+# 		namespace=crapi_k8s_namespace
+# 	),
+# 	spec=k8s.core.v1.ServiceSpecArgs(
+# 		selector={
+# 			"app": "mongodb"
+# 		},
+# 		ports=[
+# 			k8s.core.v1.ServicePortArgs(
+# 				port=27017,
+# 				target_port=27017
+# 			)
+# 		]
+# 	)
+# )
 
 # Exports
 pulumi.export("crapiImages", images)

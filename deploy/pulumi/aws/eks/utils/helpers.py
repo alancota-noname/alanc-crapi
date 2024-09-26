@@ -1,6 +1,7 @@
 import base64
 from pathlib import Path
 from config import settings
+import pulumi_docker_build as docker_build
 
 
 def encode_file(file_path):
@@ -45,4 +46,37 @@ def k8s_labels(
     return labels
 
 
-# Deploy the crAPI App to the EKS Cluster
+def build_image(
+    labels,
+    auth_token,
+    service_name,
+    image_name,
+    services_path,
+    ecr_repository,
+    docker_tag,
+    push_to_ecr=True,
+):
+    print(f"Building image {ecr_repository.url} - {service_name}:{docker_tag}...")
+    image = docker_build.Image(
+        image_name,
+        context={
+            "location": f"{services_path}/{service_name}",
+        },
+        push=push_to_ecr,
+        registries=[
+            {
+                "address": ecr_repository.url,
+                "password": auth_token.password,
+                "username": auth_token.user_name,
+            }
+        ],
+        labels=labels,
+        tags=[
+            ecr_repository.url.apply(
+                lambda repository_url: f"{repository_url}:{docker_tag}"
+            ),
+            ecr_repository.url.apply(lambda repository_url: f"{repository_url}:latest"),
+        ],
+    )
+
+    return image

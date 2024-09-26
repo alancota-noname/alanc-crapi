@@ -332,6 +332,73 @@ semver = ">=2.13,<3.0"
 six = ">=1.12,<2.0"
 
 [[package]]
+name = "pulumi-aws"
+version = "6.52.0"
+description = "A Pulumi package for creating and managing Amazon Web Services (AWS) cloud resources."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pulumi_aws-6.52.0-py3-none-any.whl", hash = "sha256:b7ad96a395c471b39deab051046c0b8f90ffc963a70428e1491da864fbca650a"},
+    {file = "pulumi_aws-6.52.0.tar.gz", hash = "sha256:42d0631fd6144106f9e5bbee8694cd635563482c9f9e2fc23fa2bbc13d8a5c3c"},
+]
+
+[package.dependencies]
+parver = ">=0.2.1"
+pulumi = ">=3.0.0,<4.0.0"
+semver = ">=2.8.1"
+typing-extensions = {version = ">=4.11", markers = "python_version < \"3.11\""}
+
+[[package]]
+name = "pulumi-awsx"
+version = "2.15.0"
+description = "Pulumi Amazon Web Services (AWS) AWSX Components."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pulumi_awsx-2.15.0-py3-none-any.whl", hash = "sha256:6d86eca63911d552ec0cb448f86cb5622e66245c6ff554cc2399854c358c2d0e"},
+    {file = "pulumi_awsx-2.15.0.tar.gz", hash = "sha256:123f22c47cee9d7716ab9bd7c5a36d64bfd0b19af503abf05f2c14fb3004bd6d"},
+]
+
+[package.dependencies]
+parver = ">=0.2.1"
+pulumi = ">=3.91.1,<4.0.0"
+pulumi-aws = ">=6.0.4,<7.0.0"
+pulumi-docker = ">=4.5.1,<5.0.0"
+semver = ">=2.8.1"
+
+[[package]]
+name = "pulumi-docker"
+version = "4.5.6"
+description = "A Pulumi package for interacting with Docker in Pulumi programs"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pulumi_docker-4.5.6-py3-none-any.whl", hash = "sha256:bcbfb9d1da9daf6cffa0d24efeba2809e98c0f7fc318f88da63ac45909520a5d"},
+    {file = "pulumi_docker-4.5.6.tar.gz", hash = "sha256:f8d3a1bee85595f18f3903963b4e79e438ce4422082fd3483140f44ef1388bc0"},
+]
+
+[package.dependencies]
+parver = ">=0.2.1"
+pulumi = ">=3.0.0,<4.0.0"
+semver = ">=2.8.1"
+
+[[package]]
+name = "pulumi-docker-build"
+version = "0.0.6"
+description = "A Pulumi provider for building modern Docker images with buildx and BuildKit."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pulumi_docker_build-0.0.6-py3-none-any.whl", hash = "sha256:7c7a81356a650df047df2bdaa90ac9b62ad002dd4e39ff727f59e4c959700a78"},
+    {file = "pulumi_docker_build-0.0.6.tar.gz", hash = "sha256:05121a69318857890d3be54ea39ff7411c50a7ff18ba411092aead29017235c4"},
+]
+
+[package.dependencies]
+parver = ">=0.2.1"
+pulumi = ">=3.0.0,<4.0.0"
+semver = ">=2.8.1"
+
+[[package]]
 name = "pulumi-kubernetes"
 version = "4.18.1"
 description = "A Pulumi package for creating and managing Kubernetes resources."
@@ -523,4 +590,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "20bdf40e889c6fc24e7b9ad0a664dbcd5d7d3bbb50019d515df7834c4b344c1c"
+content-hash = "e14847f040174e2690785f06b223116133378e797809e326e8c5fdce0eb360a5"
