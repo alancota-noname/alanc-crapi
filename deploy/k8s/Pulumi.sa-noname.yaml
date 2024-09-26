@@ -11,9 +11,9 @@ config:
   alanc-crapi-k8s:pulumiInfraStackName: sa-noname
   alanc-crapi-k8s:appName: alanc-crapi
   alanc-crapi-k8s:servicesPath: ../../services
-  alanc-crapi-k8s:dockerTag: noname-1.1.6
+  alanc-crapi-k8s:dockerTag: rc2
   alanc-crapi-k8s:pushToEcr: True
-  alanc-crapi-k8s:buildCustomImages: False
+  alanc-crapi-k8s:buildCustomImages: True
   alanc-crapi-k8s:servicesToBuild: ["community", "gateway-service", "identity", "mailhog", "web", "workshop"]
   alanc-crapi-k8s:eksClusterName: sa-eks
   alanc-crapi-k8s:eksAppNamespace: alanc-crapi

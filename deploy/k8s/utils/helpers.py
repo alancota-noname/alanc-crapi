@@ -30,6 +30,11 @@ def build_image(labels, auth_token, service_name, image_name, services_path, ecr
 			"password": auth_token.password,
 			"username": auth_token.user_name,
 		}],
+	# Build a multi-platform image manifest for ARM and AMD.
+		platforms=[
+			docker_build.Platform.LINUX_AMD64,
+			docker_build.Platform.LINUX_ARM64,
+		],
 		labels=labels,
 		tags=[
 			ecr_repository.url.apply(lambda repository_url: f"{repository_url}:{docker_tag}"),

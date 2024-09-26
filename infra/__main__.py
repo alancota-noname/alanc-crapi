@@ -12,6 +12,7 @@ config = pulumi.Config()
 project_prefix = config.require("projectPrefix")
 project_owner = config.get("projectOwnerTag")
 vpc_network_cidr = config.get("vpcNetworkCidr", "10.60.0.0/16")
+create_vpc = config.get_bool("createVpc", False)
 vpc_name = config.get("vpcName", "alanc-crapi-vpc")
 vpc_num_zones = config.get_int("vpcNumberAvailabilityZones", 2)
 create_security_group = config.get_bool("createSecurityGroup", False)
@@ -27,57 +28,58 @@ eks_node_instance_type = config.get("eksNodeInstanceType", "t2.small")
 
 print(f"AWS Region: {aws.get_region().name}")
 
-# Create the AWS VPC
-vpc = awsx.ec2.Vpc(
-	vpc_name,
-	enable_dns_hostnames=True,
-	cidr_block=vpc_network_cidr,
-	number_of_availability_zones=vpc_num_zones,
-	subnet_specs=[
-		awsx.ec2.SubnetSpecArgs(
-			type=awsx.ec2.SubnetType.PUBLIC,
-			cidr_mask=24,
-		),
-		awsx.ec2.SubnetSpecArgs(
-			type=awsx.ec2.SubnetType.PRIVATE,
-			cidr_mask=24,
-		),
-	],
-	tags={
-		"Name": vpc_name,
-		"Owner": project_owner,
-	}
-)
+if create_vpc:
+	# Create the AWS VPC
+	vpc = awsx.ec2.Vpc(
+		vpc_name,
+		enable_dns_hostnames=True,
+		cidr_block=vpc_network_cidr,
+		number_of_availability_zones=vpc_num_zones,
+		subnet_specs=[
+			awsx.ec2.SubnetSpecArgs(
+				type=awsx.ec2.SubnetType.PUBLIC,
+				cidr_mask=24,
+			),
+			awsx.ec2.SubnetSpecArgs(
+				type=awsx.ec2.SubnetType.PRIVATE,
+				cidr_mask=24,
+			),
+		],
+		tags={
+			"Name": vpc_name,
+			"Owner": project_owner,
+		}
+	)
 
-# Create the AWS Security Groups
-security_group_allow_all = aws.ec2.SecurityGroup(
-	resource_name=f"{project_prefix}-allow-all",
-	description="Allow All traffic from Home Network",
-	vpc_id=vpc.vpc_id,
-	tags={
-		"Owner": project_owner,
-		"Cleanup": "false",
-	})
+	# Create the AWS Security Groups
+	security_group_allow_all = aws.ec2.SecurityGroup(
+		resource_name=f"{project_prefix}-allow-all",
+		description="Allow All traffic from Home Network",
+		vpc_id=vpc.vpc_id,
+		tags={
+			"Owner": project_owner,
+			"Cleanup": "false",
+		})
 
-# Create ingress and egress rules for the security group
+	# Create ingress and egress rules for the security group
 
-# Allow all traffic from Home Network (0.0.0.0/0)
-ingress_allow_all_ipv4 = aws.vpc.SecurityGroupIngressRule(
-	resource_name="allow-all-ipv4-ingress",
-	security_group_id=security_group_allow_all.id,
-	cidr_ipv4=allow_all_from,
-	from_port=-1,
-	to_port=-1,
-	ip_protocol="-1",
-)
+	# Allow all traffic from Home Network (0.0.0.0/0)
+	ingress_allow_all_ipv4 = aws.vpc.SecurityGroupIngressRule(
+		resource_name="allow-all-ipv4-ingress",
+		security_group_id=security_group_allow_all.id,
+		cidr_ipv4=allow_all_from,
+		from_port=-1,
+		to_port=-1,
+		ip_protocol="-1",
+	)
 
-# Allow outbound traffic
-egress_allow_all_ipv4 = aws.vpc.SecurityGroupIngressRule(
-	resource_name="allow-all-ipv4-egress",
-	security_group_id=security_group_allow_all.id,
-	cidr_ipv4="0.0.0.0/0",
-	ip_protocol="-1",
-)
+	# Allow outbound traffic
+	egress_allow_all_ipv4 = aws.vpc.SecurityGroupIngressRule(
+		resource_name="allow-all-ipv4-egress",
+		security_group_id=security_group_allow_all.id,
+		cidr_ipv4="0.0.0.0/0",
+		ip_protocol="-1",
+	)
 
 
 if create_eks_cluster:
